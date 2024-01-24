@@ -46,6 +46,7 @@ def new_start(message: telebot.types.ChatJoinRequest):
     cursor.execute(""" SELECT user_id FROM Users WHERE user_id = %s """, [message.from_user.id])
     username = cursor.fetchone()
     conn.commit()
+
     
     if username is None:
         cursor.execute("""INSERT INTO Users (user_id, name, username) VALUES (%s, %s, %s)""", (message.from_user.id, f'{message.from_user.first_name} {message.from_user.last_name}', message.from_user.username))
