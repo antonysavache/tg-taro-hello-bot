@@ -43,12 +43,12 @@ def new_start(message: telebot.types.ChatJoinRequest):
     
     bot.approve_chat_join_request(message.chat.id, message.from_user.id)
 
-    cursor.execute(f"""SELECT user_id FROM Users WHERE user_id=:user""",  {'user': message.from_user.id})
+    cursor.execute(""" SELECT user_id FROM Users WHERE user_id = %s """, [message.from_user.id])
     username = cursor.fetchone()
     conn.commit()
     
     if username is None:
-        cursor.execute('INSERT INTO Users (user_id, name, username) VALUES (?, ?, ?)', (message.from_user.id, f'{message.from_user.first_name} {message.from_user.last_name}', message.from_user.username))
+        cursor.execute("""INSERT INTO Users (user_id, name, username) VALUES (%s, %s, %s)""", (message.from_user.id, f'{message.from_user.first_name} {message.from_user.last_name}', message.from_user.username))
         conn.commit()
 
 
