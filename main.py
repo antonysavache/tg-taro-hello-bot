@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-
+import psycopg2
 import telebot
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, InputMediaPhoto
-import sqlite3
 import requests
+
+import config
 
 text = ''
 type = ''
@@ -12,7 +13,13 @@ id = ''
 msg = ''
 user_id = ''
 check = 0
-conn = sqlite3.connect('database.db', check_same_thread=False)
+conn = psycopg2.connect(
+    host=config.PGHOST,
+    database=config.PGDATABASE,
+    user=config.PGUSER,
+    port=config.PGPORT,
+    password=config.PGPASS)
+
 cursor = conn.cursor()
 
 ADMIN = 'cryptobroker_x'
@@ -41,7 +48,7 @@ def new_start(message: telebot.types.ChatJoinRequest):
     conn.commit()
     
     if username is None:
-        cursor.execute('INSERT INTO Users (user_id, username) VALUES (?, ?)', (message.from_user.id, message.from_user.username))
+        cursor.execute('INSERT INTO Users (user_id, name, username) VALUES (?, ?, ?)', (message.from_user.id, f'{message.from_user.first_name} {message.from_user.last_name}', message.from_user.username))
         conn.commit()
 
 
