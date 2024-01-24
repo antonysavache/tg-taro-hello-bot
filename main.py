@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import logging
+
 import psycopg2
 import telebot
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, InputMediaPhoto
@@ -13,6 +15,12 @@ id = ''
 msg = ''
 user_id = ''
 check = 0
+
+logging.basicConfig(
+    format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+    level=logging.NOTSET
+)
+
 conn = psycopg2.connect(
     host=config.PGHOST,
     database=config.PGDATABASE,
@@ -25,6 +33,7 @@ cursor = conn.cursor()
 ADMIN = 'cryptobroker_x'
 ADMIN_ID = '6599410167'
 TOKEN = '6973189726:AAEwiaeNnRRWKuu468BVKL0BLgbhhYCrq3k'
+
 
 
 bot = telebot.TeleBot(TOKEN)
