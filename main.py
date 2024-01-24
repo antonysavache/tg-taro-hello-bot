@@ -16,10 +16,10 @@ msg = ''
 user_id = ''
 check = 0
 
-logging.basicConfig(
-    format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-    level=logging.NOTSET
-)
+# logging.basicConfig(
+#     format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+#     level=logging.NOTSET
+# )
 
 conn = psycopg2.connect(
     host=config.PGHOST,
@@ -52,13 +52,13 @@ def new_start(message: telebot.types.ChatJoinRequest):
     
     bot.approve_chat_join_request(message.chat.id, message.from_user.id)
 
-    cursor.execute(""" SELECT user_id FROM Users WHERE user_id = %s """, [message.from_user.id])
+    cursor.execute(""" SELECT user_id FROM tg_bot_users WHERE user_id = %s """, [message.from_user.id])
     username = cursor.fetchone()
     conn.commit()
 
     
     if username is None:
-        cursor.execute("""INSERT INTO Users (user_id, name, username) VALUES (%s, %s, %s)""", (message.from_user.id, f'{message.from_user.first_name} {message.from_user.last_name}', message.from_user.username))
+        cursor.execute("""INSERT INTO tg_bot_users (user_id, name, username) VALUES (%s, %s, %s)""", (message.from_user.id, f'{message.from_user.first_name} {message.from_user.last_name}', message.from_user.username))
         conn.commit()
 
 
@@ -149,7 +149,7 @@ def sender(message):
     global text, type, caption, id
 
     if message.text == 'Да':
-        cursor.execute(f"""SELECT user_id FROM Users""")
+        cursor.execute(f"""SELECT user_id FROM tg_bot_users""")
         all_ids = cursor.fetchall()
 
         count = 0
